@@ -1,0 +1,21 @@
+# Core dependencies
+python-dotenv==1.0.0
+requests==2.31.0
+
+# For data handling
+pandas==2.1.4
+openpyxl==3.1.2
+
+# For Hugo integration (future use)
+pyyaml==6.0.1
+markdown==3.5.1
+
+# For date handling
+python-dateutil==2.8.2
+
+# Optional: for better HTTP handling
+httpx==0.25.2
+
+# For fuzzy string matching
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.27.1
