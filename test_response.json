@@ -1,0 +1,153 @@
+{
+  "id": "1dc8af9e-8315-4e21-9f47-fcb5eb5486f9",
+  "model": "sonar",
+  "created": 1763580150,
+  "usage": {
+    "prompt_tokens": 34,
+    "completion_tokens": 245,
+    "total_tokens": 279,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.0,
+      "output_tokens_cost": 0.0,
+      "request_cost": 0.005,
+      "total_cost": 0.005
+    }
+  },
+  "citations": [
+    "https://www.24-7pressrelease.com/press-release/528898/renaissance-bioscience-and-biome-bioplastics-partner-to-develop-next-generation-sustainable-renewable-bioplastics",
+    "https://www.european-bioplastics.org/news/press-releases/",
+    "https://events.amiplastics.com/plastics-world-expos-na/press/news/using-lignocellulosics-as-performance-additives-in-bioplastics",
+    "https://www.einpresswire.com/article/867894247/bioplastics-market-size-expected-to-hit-usd-22-23-billion-by-2032-key-trends-demand-share-analysis-forecast-report",
+    "https://news.vt.edu/articles/2025/10/cnre-research-spray-coatings.html",
+    "https://www.ghazan.global/post/bioplastics-week-and-investing-in-the-future-of-sustainable-plastics",
+    "https://packagingeurope.com/news/researchers-develop-bamboo-bioplastic-with-exceptional-mechanical-strength/13636.article",
+    "https://www.plasticstoday.com/biopolymers/bioplastics-news-stream",
+    "https://www.plasticstoday.com/packaging/renaissance-bioscience-partners-with-biome-bioplastics-to-develop-renewable-plastic-alternatives",
+    "https://www.plasticsindustry.org/bio-page/",
+    "https://bioplasticsnews.com/2025/11/19/bioplastics-the-green-illusion-that-ends-in-the-trash/",
+    "https://www.waste360.com/industry-insights/navigating-the-bioplastics-maze",
+    "https://world.einnews.com/amp/pr_news/867894247/bioplastics-market-size-expected-to-hit-usd-22-23-billion-by-2032-key-trends-demand-share-analysis-forecast-report",
+    "https://www.bioplasticsmagazine.com/en/news/"
+  ],
+  "search_results": [
+    {
+      "title": "Renaissance BioScience and Biome Bioplastics Partner to Develop ...",
+      "url": "https://www.24-7pressrelease.com/press-release/528898/renaissance-bioscience-and-biome-bioplastics-partner-to-develop-next-generation-sustainable-renewable-bioplastics",
+      "date": "2025-11-18",
+      "last_updated": "2025-11-19",
+      "snippet": "Press Release November 18, 2025. C$1.5 million (\u00a3814,000) Canada-UK project will harness yeast and bacterial fermentation to produce ...",
+      "source": "web"
+    },
+    {
+      "title": "Press Releases - European Bioplastics",
+      "url": "https://www.european-bioplastics.org/news/press-releases/",
+      "date": "2023-03-24",
+      "last_updated": "2025-11-08",
+      "snippet": "The report confirms the continuous growth of the global production capacities of bioplastics. Overall global plastics production continues to rise steadily.",
+      "source": "web"
+    },
+    {
+      "title": "Using lignocellulosics as performance additives in bioplastics - Events",
+      "url": "https://events.amiplastics.com/plastics-world-expos-na/press/news/using-lignocellulosics-as-performance-additives-in-bioplastics",
+      "date": "2025-11-05",
+      "last_updated": "2025-11-06",
+      "snippet": "Using lignocellulosics as performance additives in bioplastics. 5 November 2025. Headshot of Frank Kvietok, Lignetics Group. Frank Kvietok ...",
+      "source": "web"
+    },
+    {
+      "title": "Bioplastics Market Size Expected to Hit USD 22.23 Billion by 2032",
+      "url": "https://www.einpresswire.com/article/867894247/bioplastics-market-size-expected-to-hit-usd-22-23-billion-by-2032-key-trends-demand-share-analysis-forecast-report",
+      "date": "2025-11-17",
+      "last_updated": "2025-11-18",
+      "snippet": "The Bioplastics Market is expanding rapidly, driven by rising sustainability demands and increasing adoption of eco-friendly materials.",
+      "source": "web"
+    },
+    {
+      "title": "Spray-coated bioplastics offer scalable, sustainable alternative to ...",
+      "url": "https://news.vt.edu/articles/2025/10/cnre-research-spray-coatings.html",
+      "date": "2025-11-03",
+      "last_updated": "2025-11-16",
+      "snippet": "Researchers develop a proof-of-concept process to strengthen biodegradable paper coatings and reduce plastic waste.",
+      "source": "web"
+    },
+    {
+      "title": "Bioplastics Week and Investing in the Future of Sustainable Plastics",
+      "url": "https://www.ghazan.global/post/bioplastics-week-and-investing-in-the-future-of-sustainable-plastics",
+      "snippet": "Beyond awards and digital campaigns, Bioplastics Week points to significant developments in the sector. Bioplastics are moving from pilot to production, with ...",
+      "source": "web"
+    },
+    {
+      "title": "Researchers develop bamboo bioplastic with 'exceptional ...",
+      "url": "https://packagingeurope.com/news/researchers-develop-bamboo-bioplastic-with-exceptional-mechanical-strength/13636.article",
+      "date": "2025-11-18",
+      "snippet": "Researchers develop bamboo bioplastic with 'exceptional' mechanical strength. 18 November 2025.",
+      "source": "web"
+    },
+    {
+      "title": "Bioplastics News Stream - Plastics Today",
+      "url": "https://www.plasticstoday.com/biopolymers/bioplastics-news-stream",
+      "date": "2024-09-18",
+      "last_updated": "2025-06-26",
+      "snippet": "Global bioplastics for agribusiness market is estimated to grow by $1.36 billion from 2024-2028 at a CAGR of 18.63%.",
+      "source": "web"
+    },
+    {
+      "title": "Renaissance BioScience Partners with Biome Bioplastics",
+      "url": "https://www.plasticstoday.com/packaging/renaissance-bioscience-partners-with-biome-bioplastics-to-develop-renewable-plastic-alternatives",
+      "snippet": "November 18, 2025. 3 Min Read. Bioplastics. Two-year initiative targets packaging and personal care applications worth $1.06 million.Khanchit ...",
+      "source": "web"
+    },
+    {
+      "title": "Bioplastics | We protect, promote, and grow the plastics industry.",
+      "url": "https://www.plasticsindustry.org/bio-page/",
+      "date": "2025-10-15",
+      "last_updated": "2025-11-17",
+      "snippet": "Global production of bioplastics is projected to increase by 48% annually. Reaching 7.43 million tons by 2028. US growth projections hover around 14% annually.",
+      "source": "web"
+    },
+    {
+      "title": "Bioplastics: Promises, Pitfalls, and the Need for Change",
+      "url": "https://bioplasticsnews.com/2025/11/19/bioplastics-the-green-illusion-that-ends-in-the-trash/",
+      "date": "2025-11-19",
+      "last_updated": "2025-11-19",
+      "snippet": "We've all been told that bioplastics are the future \u2014 the shiny green replacement for the evil fossil plastics. The truth?",
+      "source": "web"
+    },
+    {
+      "title": "Navigating the Bioplastics Maze - Waste360",
+      "url": "https://www.waste360.com/industry-insights/navigating-the-bioplastics-maze",
+      "snippet": "Over 2.8 million metric tons are expected to be produced in 2025. Yet in the United States, one of the most active markets, less than 200 full- ...",
+      "source": "web"
+    },
+    {
+      "title": "Bioplastics Market Size Expected to Hit USD 22.23 Billion by 2032",
+      "url": "https://world.einnews.com/amp/pr_news/867894247/bioplastics-market-size-expected-to-hit-usd-22-23-billion-by-2032-key-trends-demand-share-analysis-forecast-report",
+      "snippet": "Global Bioplastics Market Report 2025 delivers a comprehensive analysis of emerging market trends, evolving demand patterns, and growth ...",
+      "source": "web"
+    },
+    {
+      "title": "Daily News - bioplastics MAGAZINE",
+      "url": "https://www.bioplasticsmagazine.com/en/news/",
+      "date": "2008-08-27",
+      "last_updated": "2025-11-17",
+      "snippet": "... MarketBiobased. Brenntag Specialties and Synonym Partner to launch the \u201cBetter with Bio\u201d. November 10, 2025. Brenntag Specialties and Synonym Partner to launch ...",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "The latest developments in the bioplastics industry over the past week include a significant Canada-UK collaboration between Renaissance BioScience and Biome Bioplastics to develop next-generation sustainable renewable bioplastics using advanced yeast and bacterial fermentation processes. This two-year project, valued at C$1.5 million (\u00a3814,000), aims to create bio-based building blocks to replace petroleum-derived materials for packaging and personal care applications, focusing on scalability, cost-effectiveness, and reducing fossil fuel dependence[1][9].\n\nAdditionally, researchers have developed a new bamboo-based bioplastic exhibiting exceptional mechanical strength, marking a notable advancement in bio-based materials with potential for durable applications[7].\n\nThere is also progress in improving bioplastic coatings for paper packaging: a proof-of-concept spray-coating process using PLA and PHA bioplastics enhances strength, oxygen resistance, and water resistance of paper packaging while maintaining compostability. The next step is to develop a water-based, solvent-free coating process to increase environmental safety and industrial scalability[5].\n\nThese developments reflect ongoing innovation in bioplastic materials, production methods, and applications, reinforcing the sector's momentum toward sustainable, high-performance alternatives to conventional plastics[1][5][7]."
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

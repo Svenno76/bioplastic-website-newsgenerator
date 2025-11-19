@@ -13,6 +13,8 @@ from pathlib import Path
 import pandas as pd
 import requests
 from urllib.parse import urlparse
+from openpyxl import load_workbook
+from openpyxl.styles import Alignment
 
 # Add parent directory to path to import config
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
@@ -71,6 +73,12 @@ def identify_incomplete_records(df):
     # Fields to check for completeness
     fields_to_check = ['Type', 'Country', 'Description', 'Primary Materials',
                        'Market Segments', 'Status', 'Publicly Listed']
+
+    # Add social media fields if they exist
+    social_media_fields = ['Twitter', 'LinkedIn', 'YouTube', 'Instagram']
+    for field in social_media_fields:
+        if field in df.columns:
+            fields_to_check.append(field)
 
     # Find rows with at least one empty field
     incomplete_mask = df[fields_to_check].isnull().any(axis=1) | \
@@ -150,7 +158,11 @@ Research the bioplastic company "{company_name}" and provide the following infor
   "Status": "One of: Active, Acquired, Defunct, Unknown",
   "PubliclyListed": "Yes or No - is the company publicly traded on a stock exchange?",
   "StockTicker": "Stock ticker symbol (e.g., NASDAQ:DNMR, NYSE:AMCR) if publicly listed, otherwise leave blank",
-  "Webpage": "Official company website URL (validate and correct if needed)"
+  "Webpage": "Official company website URL (validate and correct if needed)",
+  "Twitter": "Official company Twitter/X handle (e.g., @CompanyName or full URL like https://twitter.com/CompanyName), or leave blank if not found",
+  "LinkedIn": "Official company LinkedIn page URL (e.g., https://www.linkedin.com/company/company-name), or leave blank if not found",
+  "YouTube": "Official company YouTube channel URL (e.g., https://www.youtube.com/@ChannelName), or leave blank if not found",
+  "Instagram": "Official company Instagram profile URL (e.g., https://www.instagram.com/username), or leave blank if not found"
 }}
 
 IMPORTANT:
@@ -162,7 +174,10 @@ IMPORTANT:
 - Country should be the full name (e.g., "United States" not "USA")
 - Description should be concise (50-150 words)
 - Focus on bioplastic-related activities
-- If information is uncertain, use "Unknown" rather than guessing
+- For social media: Only include verified official company accounts
+- Social media URLs should be complete and valid (not shortened links)
+- If information is uncertain, leave social media field blank rather than guessing
+- If the company does not have a particular social media account, leave that field blank
 
 Return ONLY valid JSON, no markdown formatting or explanations.
 """
@@ -181,7 +196,7 @@ Return ONLY valid JSON, no markdown formatting or explanations.
         "messages": [
             {
                 "role": "system",
-                "content": "You are a research assistant specializing in the bioplastic industry. Provide accurate, structured information about companies in JSON format."
+                "content": "You are a research assistant specializing in the bioplastic industry. Provide accurate, structured information about companies in JSON format. Focus on finding verified official social media accounts."
             },
             {
                 "role": "user",
@@ -234,6 +249,75 @@ Return ONLY valid JSON, no markdown formatting or explanations.
         return None
 
 
+def normalize_social_media_url(url, platform):
+    """
+    Normalize social media URLs to standard formats.
+
+    Args:
+        url: Social media URL or handle
+        platform: Platform name (Twitter, LinkedIn, YouTube, Instagram)
+
+    Returns:
+        str: Normalized full URL
+    """
+    url = url.strip()
+
+    if platform == 'Twitter':
+        # Handle @username or twitter.com/username formats
+        if url.startswith('@'):
+            return f'https://twitter.com/{url[1:]}'
+        elif 'twitter.com' in url or 'x.com' in url:
+            if not url.startswith('http'):
+                return f'https://{url}'
+            return url
+        else:
+            # Assume it's a handle
+            return f'https://twitter.com/{url}'
+
+    elif platform == 'LinkedIn':
+        # Handle LinkedIn URLs
+        if 'linkedin.com' not in url:
+            return f'https://www.linkedin.com/company/{url}'
+        elif not url.startswith('http'):
+            return f'https://{url}'
+        return url
+
+    elif platform == 'YouTube':
+        # Handle YouTube URLs
+        if 'youtube.com' not in url and 'youtu.be' not in url:
+            return f'https://www.youtube.com/@{url}'
+        elif not url.startswith('http'):
+            return f'https://{url}'
+        return url
+
+    elif platform == 'Instagram':
+        # Handle Instagram URLs
+        if 'instagram.com' not in url:
+            return f'https://www.instagram.com/{url}/'
+        elif not url.startswith('http'):
+            return f'https://{url}'
+        return url
+
+    return url
+
+
+def is_valid_url(url):
+    """
+    Validate if URL has proper format.
+
+    Args:
+        url: URL to validate
+
+    Returns:
+        bool: True if valid URL format
+    """
+    try:
+        parsed = urlparse(url)
+        return bool(parsed.scheme and parsed.netloc)
+    except:
+        return False
+
+
 def validate_company_data(data, company_name):
     """
     Validate and clean company data
@@ -275,11 +359,15 @@ def validate_company_data(data, company_name):
 
     # Validate Primary Materials
     materials = data.get('PrimaryMaterials', 'Unknown')
-    validated['Primary Materials'] = materials.strip()
+    if isinstance(materials, list):
+        materials = ', '.join(materials)
+    validated['Primary Materials'] = materials.strip() if isinstance(materials, str) else str(materials)
 
     # Validate Market Segments
     segments = data.get('MarketSegments', 'Unknown')
-    validated['Market Segments'] = segments.strip()
+    if isinstance(segments, list):
+        segments = ', '.join(segments)
+    validated['Market Segments'] = segments.strip() if isinstance(segments, str) else str(segments)
 
     # Validate Status
     status = data.get('Status', 'Unknown')
@@ -325,6 +413,30 @@ def validate_company_data(data, company_name):
     if publicly_listed == 'No':
         stock_ticker = ''  # Clear ticker if not publicly listed
     validated['Stock Ticker'] = stock_ticker
+
+    # Validate Social Media URLs
+    social_media_fields = {
+        'Twitter': 'Twitter',
+        'LinkedIn': 'LinkedIn',
+        'YouTube': 'YouTube',
+        'Instagram': 'Instagram'
+    }
+
+    for field_key, field_name in social_media_fields.items():
+        social_url = data.get(field_key, '').strip()
+
+        if social_url:
+            # Normalize social media URLs
+            social_url = normalize_social_media_url(social_url, field_name)
+
+            # Validate if it's a valid URL format
+            if social_url and is_valid_url(social_url):
+                validated[field_name] = social_url
+            else:
+                print(f"  ⚠️  Invalid {field_name} URL: {data.get(field_key, '')}")
+                validated[field_name] = ''
+        else:
+            validated[field_name] = ''
 
     # Add timestamp
     validated['Date Added'] = datetime.now().strftime('%Y-%m-%d')
@@ -373,12 +485,80 @@ def enrich_company(df, idx, company_name):
     return True
 
 
+def format_companies_excel(file_path):
+    """
+    Format companies Excel file with clickable URLs, proper widths, and text wrapping
+    """
+    try:
+        wb = load_workbook(file_path)
+        ws = wb.active
+
+        # Define column widths and wrap settings
+        column_config = {
+            'A': ('Company', 25, False),
+            'B': ('Type', 20, False),
+            'C': ('Country', 15, False),
+            'D': ('Webpage', 40, False),
+            'E': ('Description', 70, True),
+            'F': ('Primary Materials', 50, True),
+            'G': ('Market Segments', 50, True),
+            'H': ('Status', 12, False),
+            'I': ('Publicly Listed', 15, False),
+            'J': ('Stock Ticker', 15, False),
+            'K': ('Twitter', 35, False),
+            'L': ('LinkedIn', 35, False),
+            'M': ('YouTube', 35, False),
+            'N': ('Instagram', 35, False),
+            'O': ('Date Added', 15, False),
+        }
+
+        # Set column widths and wrap text
+        for col_letter, (col_name, width, wrap) in column_config.items():
+            ws.column_dimensions[col_letter].width = width
+
+            # Apply to all cells in column (skip header)
+            for row in range(2, ws.max_row + 1):
+                cell = ws[f'{col_letter}{row}']
+                if wrap:
+                    cell.alignment = Alignment(wrap_text=True, vertical='top')
+
+        # Make URLs clickable for multiple columns
+        url_columns = {
+            'D': 'Webpage',
+            'K': 'Twitter',
+            'L': 'LinkedIn',
+            'M': 'YouTube',
+            'N': 'Instagram'
+        }
+
+        for col_letter, col_name in url_columns.items():
+            for row in range(2, ws.max_row + 1):
+                cell = ws[f'{col_letter}{row}']
+                if cell.value:
+                    url = str(cell.value).strip()
+
+                    # Normalize URL format
+                    if url and not url.startswith(('http://', 'https://')):
+                        if url.startswith('www.') or '.' in url:
+                            url = 'https://' + url
+
+                    # Make clickable if valid URL
+                    if url.startswith('http'):
+                        cell.hyperlink = url
+                        cell.style = 'Hyperlink'
+
+        wb.save(file_path)
+    except Exception as e:
+        print(f"  ⚠️  Could not format Excel file: {e}")
+
+
 def save_results(df, file_path):
     """Save enriched data back to Excel"""
     print(f"\n💾 Saving results...")
 
     try:
         df.to_excel(file_path, index=False)
+        format_companies_excel(file_path)
         print(f"  ✓ Updated {file_path}")
         return True
     except Exception as e:

@@ -1,6 +1,6 @@
 ---
 name: company-enrichment
-description: Enriches bioplastic company data by automatically filling in missing fields (Type, Country, Description, Primary Materials, Market Segments, Status, Webpage validation) using AI-powered research. Processes companies with incomplete data and validates existing information.
+description: Enriches bioplastic company data by automatically filling in missing fields (Type, Country, Description, Primary Materials, Market Segments, Status, Publicly Listed, Stock Ticker, Webpage, Twitter, LinkedIn, YouTube, Instagram) using AI-powered research. Processes companies with incomplete data and validates existing information.
 ---
 
 # Company Enrichment Skill
@@ -11,18 +11,35 @@ Automatically researches and fills in missing company information in `companies.
 
 This skill identifies companies with incomplete data and uses AI to research and fill in:
 
+### Core Company Information
 1. **Type** - Company category from predefined list
 2. **Country** - Headquarters location
 3. **Description** - Brief company overview (2-3 sentences)
 4. **Primary Materials** - Specific bioplastics produced/used (PLA, PHA, PBS, etc.)
 5. **Market Segments** - Industries served (packaging, agriculture, automotive, etc.)
 6. **Status** - Active/Acquired/Defunct/Unknown
-7. **Publicly Listed** - Whether company is publicly traded (Yes/No)
-8. **Stock Ticker** - Stock exchange symbol if publicly listed
-9. **Webpage** - Validates and corrects company website
-10. **Date Added** - Timestamp when company was enriched
+7. **Webpage** - Validates and corrects company website
+
+### Financial Information
+8. **Publicly Listed** - Whether company is publicly traded (Yes/No)
+9. **Stock Ticker** - Stock exchange symbol if publicly listed
+
+### Social Media & Communication Channels
+10. **Twitter/X** - Official company Twitter/X handle or profile URL
+11. **LinkedIn** - Official company LinkedIn page URL
+12. **YouTube** - Official company YouTube channel URL
+13. **Instagram** - Official company Instagram profile URL
+
+### Administrative
+14. **Date Added** - Timestamp when company was enriched
 
 **Important**: After enrichment, the skill automatically deletes any companies with Type = "Unknown" to maintain database quality.
+
+**Social Media Integration**: The skill now discovers official social media accounts for each company, enabling:
+- Direct communication channels with companies
+- Alternative sources for news verification (social media announcements)
+- Enhanced credibility scoring using social media profiles
+- Audience engagement through multiple platforms
 
 ## Company Type Categories
 
@@ -63,16 +80,25 @@ For each incomplete company:
    - Target market segments
    - Company status (active/acquired/defunct)
    - Official website verification
+   - **Social media profiles** (Twitter, LinkedIn, YouTube, Instagram)
+   - Stock ticker and publicly listed status
 
 2. **Structured JSON Response** with all fields
+3. **Verified Official Accounts Only** - AI confirms social media accounts are official, not fan pages
 
 ### Phase 3: Data Validation
 
 - **Type validation**: Must match one of 10 predefined categories
 - **Country validation**: Valid country name
-- **URL validation**: Checks webpage format and accessibility
+- **URL validation**: Checks webpage and social media URLs for proper format
+- **Social Media validation**:
+  - Normalizes handles to full URLs (e.g., @username → https://twitter.com/username)
+  - Validates URL structure and format
+  - Verifies all URLs are properly formatted
+  - Only includes verified official accounts
 - **Status validation**: Active/Acquired/Defunct/Unknown only
 - **Description length**: 50-150 words
+- **Stock ticker validation**: Includes exchange prefix if publicly listed
 
 ### Phase 4: Update Database
 
@@ -182,6 +208,24 @@ Re-research all companies to update information:
 - Cost: ~$0.01-0.02 per company (sonar model)
 - Can process in batches to manage API rate limits
 
+### Excel Formatting Features
+- **Clickable URLs**: All URL columns automatically become clickable hyperlinks:
+  - Webpage (company website)
+  - Twitter/X (social media profile)
+  - LinkedIn (company page)
+  - YouTube (channel)
+  - Instagram (profile)
+- **Smart URL normalization**: Adds https:// prefix if missing, converts handles to full URLs
+- **Optimized column widths**:
+  - Company: 25 | Type: 20 | Country: 15 | Webpage: 40
+  - Description: 70 | Primary Materials: 50 | Market Segments: 50
+  - Status: 12 | Publicly Listed: 15 | Stock Ticker: 15
+  - Twitter: 35 | LinkedIn: 35 | YouTube: 35 | Instagram: 35
+  - Date Added: 15
+- **Text wrapping**: Description, Primary Materials, and Market Segments columns wrap text for better readability
+- **Professional styling**: Blue hyperlink styling applied to all URL columns
+- **Automatic application**: Formatting applied every time the skill runs
+
 ## Field Descriptions
 
 ### Type
@@ -249,6 +293,63 @@ Stock exchange symbol for publicly listed companies. Includes exchange prefix wh
 
 Empty for private companies.
 
+### Twitter/X
+Official company Twitter/X profile URL. Stored as complete URL (e.g., https://twitter.com/CompanyName).
+
+**Uses**:
+- Monitor real-time company announcements and news
+- Track industry conversations and trending topics
+- Alternative source for news verification
+- Direct communication with company
+- Social listening and sentiment analysis
+
+**Normalization**:
+- Converts @username to https://twitter.com/username
+- Validates against official company accounts only (not fan pages or employee accounts)
+
+### LinkedIn
+Official company LinkedIn page URL. Stored as complete URL (e.g., https://www.linkedin.com/company/company-name).
+
+**Uses**:
+- Company information and employee profiles
+- Job postings and recruitment updates
+- Corporate announcements and press releases
+- Industry connections and partnerships
+- Company culture and company size insights
+- Alternative news verification source
+
+**Normalization**:
+- Converts company names to LinkedIn profile URLs
+- Validates company page is official (with blue verification checkmark)
+
+### YouTube
+Official company YouTube channel URL. Stored as complete URL (e.g., https://www.youtube.com/@ChannelName).
+
+**Uses**:
+- Product demonstrations and tutorial videos
+- Company announcements and events
+- Sustainability and corporate responsibility content
+- Technical presentations and webinars
+- Historical company timeline through video archives
+
+### Instagram
+Official company Instagram profile URL. Stored as complete URL (e.g., https://www.instagram.com/username/).
+
+**Uses**:
+- Visual content and product photography
+- Company culture and workplace insights
+- Marketing campaigns and new product launches
+- Community engagement and followers
+- Real-time company updates and announcements
+
+**Note**: Not all bioplastic companies maintain Instagram accounts. Field left empty if no official account exists.
+
+### Social Media Best Practices
+- **Verified Accounts Only**: Only official company-verified accounts are recorded
+- **Not Fan Pages**: Excludes fan pages, employee accounts, or unofficial accounts
+- **Complete URLs**: All stored as clickable hyperlinks for easy access
+- **Regular Updates**: Social media URLs are updated during company enrichment cycles
+
 ## Data Quality Management
 
 ### Automatic Cleanup
@@ -264,13 +365,40 @@ This ensures the database maintains high quality and only contains actual biopla
 - "Packaging Insights" - News publication, not a bioplastic company
 - "PLASTICS" - Industry association, not a company
 
-## Integration with News Fetcher
+## Integration with Other Skills
 
+### News Fetcher Integration
 This skill complements the news fetcher (Rev2):
 
 1. **News Fetcher** discovers new companies → adds to `companies.xlsx` with name only
-2. **Company Enrichment** researches new companies → fills in all details
+2. **Company Enrichment** researches new companies → fills in all details (including social media)
 3. **News Fetcher** matches news more accurately with complete company data
+
+### News Credibility Scorer Integration
+Social media profiles enhance the credibility scoring process:
+
+1. **Current Method**: Credibility Scorer searches company website for news mentions
+2. **Enhanced with Social Media**:
+   - **Twitter/X**: Check for official announcements about the news
+   - **LinkedIn**: Verify corporate announcements and press releases
+   - **YouTube**: Find video announcements or company statements
+   - **Instagram**: Confirm visual content related to product launches
+
+**Future Enhancement**: The credibility scorer can be updated to search social media profiles alongside website content for more comprehensive verification.
+
+### Example Workflow
+```
+News Item: "Company X launches new product"
+  ↓
+Website Search: No mention found
+  ↓
+Social Media Search (future):
+  - Twitter: Company just tweeted about it → Score boost
+  - LinkedIn: Company posted announcement → Verified
+  - YouTube: Product demo uploaded → Strong verification
+  ↓
+Final Score: 100 (verified through multiple channels)
+```
 
 ## When to Run
 
@@ -290,15 +418,52 @@ This skill complements the news fetcher (Rev2):
 ## Future Enhancements
 
 1. ~~Add stock ticker lookup for public companies~~ ✅ Implemented
-2. Employee count estimation
-3. Financial data integration (revenue, funding)
-4. Social media profile discovery
+2. ~~Social media profile discovery~~ ✅ Implemented (2025-11-17)
+3. Employee count estimation
+4. Financial data integration (revenue, funding)
 5. Key personnel identification
 6. Competitor analysis
 7. Technology patent search
 8. Sustainability certifications lookup
 9. Automatic validation of stock tickers via API
 10. Historical company status tracking (track acquisitions over time)
+11. **[PLANNED]** Social media search integration for News Credibility Scorer
+12. **[PLANNED]** YouTube transcript search for news verification
+13. **[PLANNED]** LinkedIn job posting analysis (growth indicators)
+
+## Version History
+
+### Version 2.0 (2025-11-17) - Social Media Enhancement
+**Major Update**: Added social media profile discovery for all companies
+
+**New Features**:
+- ✅ Twitter/X profile discovery and validation
+- ✅ LinkedIn company page discovery
+- ✅ YouTube channel discovery
+- ✅ Instagram profile discovery
+- ✅ Smart URL normalization (handles → full URLs)
+- ✅ Clickable hyperlinks for all social media URLs in Excel
+- ✅ Verified official accounts only (excludes fan pages)
+- ✅ Integration with News Credibility Scorer (future enhancement planned)
+
+**Technical Changes**:
+- Added `normalize_social_media_url()` function for URL standardization
+- Added `is_valid_url()` function for URL validation
+- Updated API query to request social media profiles
+- Enhanced Excel formatting with 4 new social media columns
+- Updated validation to handle social media URLs
+
+**Benefits**:
+- Alternative news verification sources via social media
+- Direct communication channels with companies
+- Real-time announcements on social platforms
+- Foundation for enhanced credibility scoring
+
+### Version 1.0 (2025-10-01) - Initial Release
+- Core company enrichment functionality
+- Stock ticker and publicly listed status
+- Excel formatting with clickable URLs
+- Automatic cleanup of "Unknown" companies
 
 ## Files
 

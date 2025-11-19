@@ -35,3 +35,9 @@ temp/
 # Output files (optional - remove if you want to track these)
 output/*.json
 output/*.html
+
+# Project skills (experimental/custom)
+.claude/skills/excel-formatter/
+.claude/skills/gemini-news-fetcher/
+.claude/skills/news-story-generator/
+.claude/skills/news-credibility-scorer/

@@ -1,0 +1,115 @@
+{
+  "id": "81b9b39e-fa33-439b-a76a-3390e9ef79eb",
+  "model": "sonar",
+  "created": 1763580155,
+  "usage": {
+    "prompt_tokens": 76,
+    "completion_tokens": 209,
+    "total_tokens": 285,
+    "search_context_size": "low",
+    "cost": {
+      "input_tokens_cost": 0.0,
+      "output_tokens_cost": 0.0,
+      "request_cost": 0.005,
+      "total_cost": 0.005
+    }
+  },
+  "citations": [
+    "https://www.plasticstoday.com/biopolymers/natureworks-sets-up-new-headquarters-expands-biopolymers-r-d-lab",
+    "https://www.plasticstoday.com/biopolymers/natureworks-extend-platform-boosts-bopla-efficiency-biodegradability",
+    "https://www.packagingdigest.com/sustainability/bioplastic-resin-natureworks-may-add-second-plant",
+    "https://www.voxelmatters.com/natureworks-receives-350m-to-advance-ingeo-pla-manufacturing-in-thailand/",
+    "https://www.nonwovensnews.com/raw-materials-news/16950-natureworks-gears-up-for-international-expansion",
+    "https://www.natureworksllc.com/about-natureworks/news/ingeo-news",
+    "https://www.waste360.com/industry-insights/navigating-the-bioplastics-maze",
+    "https://www.einpresswire.com/article/867894247/bioplastics-market-size-expected-to-hit-usd-22-23-billion-by-2032-key-trends-demand-share-analysis-forecast-report",
+    "https://www.bioplasticsmagazine.com/en/news/meldungen/20240410-coffee.php"
+  ],
+  "search_results": [
+    {
+      "title": "NatureWorks Sets up New Headquarters, Expands Biopolymers ...",
+      "url": "https://www.plasticstoday.com/biopolymers/natureworks-sets-up-new-headquarters-expands-biopolymers-r-d-lab",
+      "date": "2023-10-17",
+      "last_updated": "2025-07-26",
+      "snippet": "The company is opening a new headquarters and advanced research facility in Plymouth, MN, in addition to a manufacturing complex in Thailand to produce its ...",
+      "source": "web"
+    },
+    {
+      "title": "NatureWorks' Extend Platform Boosts BOPLA Efficiency ...",
+      "url": "https://www.plasticstoday.com/biopolymers/natureworks-extend-platform-boosts-bopla-efficiency-biodegradability",
+      "date": "2025-03-21",
+      "last_updated": "2025-07-02",
+      "snippet": "NatureWorks' Ingeo Extend platform is an advancement in its biopolymer portfolio designed to accelerate biodegradation and disintegration.",
+      "source": "web"
+    },
+    {
+      "title": "Bioplastic resin: NatureWorks may add second plant",
+      "url": "https://www.packagingdigest.com/sustainability/bioplastic-resin-natureworks-may-add-second-plant",
+      "date": "2023-10-19",
+      "last_updated": "2025-06-11",
+      "snippet": "With current sales of its Ingeo\u2122 bioresin in Europe, Asia Pacific, and the Americas, NatureWorks will evaluate the location for a potential new resin production ...",
+      "source": "web"
+    },
+    {
+      "title": "NatureWorks receives $350M to advance Ingeo PLA manufacturing ...",
+      "url": "https://www.voxelmatters.com/natureworks-receives-350m-to-advance-ingeo-pla-manufacturing-in-thailand/",
+      "date": "2024-05-20",
+      "last_updated": "2025-10-19",
+      "snippet": "NatureWorks receives $350M loan from Krungthai Bank PCL to advance Ingeo PLA manufacturing facility in Thailand.",
+      "source": "web"
+    },
+    {
+      "title": "NatureWorks gears up for international expansion - Nonwovens News",
+      "url": "https://www.nonwovensnews.com/raw-materials-news/16950-natureworks-gears-up-for-international-expansion",
+      "date": "2024-10-03",
+      "last_updated": "2025-11-05",
+      "snippet": "PLYMOUTH - NatureWorks is preparing to open its new, fully integrated Ingeo PLA manufacturing facility in Thailand as it positions itself ...",
+      "source": "web"
+    },
+    {
+      "title": "Ingeo News - NatureWorks",
+      "url": "https://www.natureworksllc.com/about-natureworks/news/ingeo-news",
+      "date": "2024-01-01",
+      "last_updated": "2025-04-05",
+      "snippet": "NatureWorks appoints Erik Ripple as new president and CEO, Compostable coffee capsules made with Ingeo score high in sustainability.",
+      "source": "web"
+    },
+    {
+      "title": "Navigating the Bioplastics Maze - Waste360",
+      "url": "https://www.waste360.com/industry-insights/navigating-the-bioplastics-maze",
+      "snippet": "Over 2.8 million metric tons are expected to be produced in 2025. Yet in the United States, one of the most active markets, less than 200 full- ...",
+      "source": "web"
+    },
+    {
+      "title": "Bioplastics Market Size Expected to Hit USD 22.23 Billion by 2032",
+      "url": "https://www.einpresswire.com/article/867894247/bioplastics-market-size-expected-to-hit-usd-22-23-billion-by-2032-key-trends-demand-share-analysis-forecast-report",
+      "date": "2025-11-17",
+      "last_updated": "2025-11-18",
+      "snippet": "The Bioplastics Market is expanding rapidly, driven by rising sustainability demands and increasing adoption of eco-friendly materials.",
+      "source": "web"
+    },
+    {
+      "title": "Turn-key compostable coffee pod solution - bioplastics MAGAZINE",
+      "url": "https://www.bioplasticsmagazine.com/en/news/meldungen/20240410-coffee.php",
+      "date": "2024-04-10",
+      "last_updated": "2025-06-19",
+      "snippet": "NatureWorks (Plymouth, MN,USA), a leading manufacturer of polylactic acid (PLA) biopolymers made from renewable resources, has optimized a ...",
+      "source": "web"
+    }
+  ],
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "As of the most recent available information from November 12 to November 19, 2025, there are no new public announcements or news releases from NatureWorks regarding new products, partnerships, investments, research developments, or market expansions within this specific week.\n\nThe latest updates from NatureWorks, as reported in their official news section and industry sources, continue to highlight the ongoing construction and ramp-up activities for their new fully integrated Ingeo PLA manufacturing facility in Thailand, with recent coverage in November 2023 and May 2024 confirming progress on the project. The facility is expected to open in 2024 and will have an annual capacity of 75,000 tons of Ingeo biopolymer, supporting expanded market access in Asia Pacific and beyond.\n\nNo new product launches, partnerships, or investment announcements from NatureWorks have been reported in the past week (November 12\u201319, 2025) in major industry publications or the company\u2019s official channels."
+      },
+      "delta": {
+        "role": "assistant",
+        "content": ""
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

@@ -152,6 +152,13 @@ Simply say:
 - **Source URL categorization**: Separates company vs third-party news sources
 - **Automatic new company detection**: Adds discoveries to companies.xlsx
 
+### Excel Formatting Features
+- **Clickable URLs**: All URLs automatically become clickable hyperlinks (adds https:// prefix if missing)
+- **Optimized column widths**: Each column sized appropriately for its content
+- **Text wrapping**: Headline and Description columns wrap text for better readability
+- **Professional styling**: Blue hyperlink styling applied to all URL columns
+- **Automatic application**: Formatting applied every time the skill runs
+
 ### Important Notes
 - **API Date Accuracy**: Perplexity may return news outside the requested date range. Rev2's validation layer filters these out, but this means you may get fewer valid results than requested.
 - **Company Website Priority**: While the prompt prioritizes company websites, search results may still include third-party news sites. The URL categorization helps identify the source.
