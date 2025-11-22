@@ -184,37 +184,38 @@ def extract_news_from_results(research_data, days=7):
         content = research_data['content']
         citations = research_data.get('citations', [])
 
-        # Build citations list
+        # Build citations list with indices for reference
         citations_text = "\n".join([f"[{idx+1}] {url}" for idx, url in enumerate(citations)])
 
-        # Construct extraction query
+        # Construct extraction query - more aggressive and direct
         query = f"""
-        Based on this research about bioplastic news:
+        From the research below, extract EVERY news item about bioplastic/biopolymer COMPANIES.
 
+        RESEARCH:
         {content}
 
-        Available citation URLs:
+        AVAILABLE URLS:
         {citations_text}
 
-        Extract structured news items about bioplastic/biopolymer COMPANIES that match these criteria:
-        - From actual companies (producers, converters, compounders, equipment manufacturers)
-        - Published between {start_date.strftime('%B %d, %Y')} and {today.strftime('%B %d, %Y')}
-        - Categories: Plant Announcement, People Moves, M&A, Product Launch, Partnerships,
-          Financial Results, Supply Agreements, Investment & Funding, Certifications
+        For each news item found, create a JSON object with:
+        - Company: Exact company name from the research
+        - PublishingDate: Date in YYYY-MM-DD format (must be between {start_date.strftime('%B %d, %Y')} and {today.strftime('%B %d, %Y')})
+        - Headline: News headline (max 100 characters)
+        - Description: 50-word summary
+        - Category: ONE of these ONLY - Plant Announcement, People Moves, M&A, Litigation, Product Launch, Partnerships, Financial Results, Supply Agreements, Investment & Funding, Certifications
+        - SourceURL: MUST be from the AVAILABLE URLS list above
 
-        Return JSON array format:
+        IMPORTANT:
+        - Extract ALL valid news items you find
+        - Match each item to a URL from the AVAILABLE URLS list
+        - Only include news published between {start_date.strftime('%B %d, %Y')} and {today.strftime('%B %d, %Y')}
+        - Return ONLY a JSON array, no other text
+        - If you find NO valid news items, return: []
+
+        Return format (ONLY JSON, nothing else):
         [
-          {{
-            "Company": "company name",
-            "PublishingDate": "YYYY-MM-DD",
-            "Headline": "headline (max 100 chars)",
-            "Description": "50-word summary",
-            "Category": "category from list above",
-            "SourceURL": "URL from citations list above"
-          }}
+          {{"Company": "...", "PublishingDate": "YYYY-MM-DD", "Headline": "...", "Description": "...", "Category": "...", "SourceURL": "..."}}
         ]
-
-        ONLY use URLs from the citations list. Return empty array if no valid news found.
         """
 
         headers = {
@@ -223,19 +224,19 @@ def extract_news_from_results(research_data, days=7):
         }
 
         payload = {
-            "model": Config.DEFAULT_MODEL,
+            "model": "sonar",  # Use faster model for extraction
             "messages": [
                 {
                     "role": "system",
-                    "content": "You extract structured JSON data. Return only valid JSON arrays."
+                    "content": "You extract structured JSON data from text. Return ONLY valid JSON arrays with no additional text, explanation, or markdown formatting."
                 },
                 {
                     "role": "user",
                     "content": query
                 }
             ],
-            "max_tokens": 2000,
-            "temperature": 0.2,
+            "max_tokens": 3000,
+            "temperature": 0.1,  # Very low temperature for consistent extraction
             "stream": False
         }
 
@@ -249,27 +250,36 @@ def extract_news_from_results(research_data, days=7):
 
         if response.status_code == 200:
             result = response.json()
-            content = result['choices'][0]['message']['content']
+            extracted_content = result['choices'][0]['message']['content'].strip()
 
             print(f"✓ Extraction successful")
-            print(f"\n📄 Raw response:\n{content}\n")
+            print(f"\n📄 Raw response:\n{extracted_content}\n")
 
-            # Parse JSON
-            content = content.strip()
-            if content.startswith('```json'):
-                content = content[7:]
-            if content.startswith('```'):
-                content = content[3:]
-            if content.endswith('```'):
-                content = content[:-3]
-            content = content.strip()
+            # Clean up response - remove markdown code blocks
+            cleaned_content = extracted_content
+            if cleaned_content.startswith('```json'):
+                cleaned_content = cleaned_content[7:]
+            if cleaned_content.startswith('```'):
+                cleaned_content = cleaned_content[3:]
+            if cleaned_content.endswith('```'):
+                cleaned_content = cleaned_content[:-3]
+            cleaned_content = cleaned_content.strip()
+
+            # Handle edge case of empty response
+            if not cleaned_content or cleaned_content == '[]':
+                print(f"✓ Successfully parsed 0 news items")
+                return []
 
             try:
-                news_items = json.loads(content)
+                news_items = json.loads(cleaned_content)
+                if not isinstance(news_items, list):
+                    logging.warning(f"API returned non-list JSON: {type(news_items)}")
+                    return []
                 print(f"✓ Successfully parsed {len(news_items)} news items")
                 return news_items
             except json.JSONDecodeError as e:
-                logging.error(f"Failed to parse JSON: {e}")
+                logging.error(f"Failed to parse JSON response: {e}")
+                logging.error(f"Raw content was: {cleaned_content[:500]}")
                 return []
         else:
             logging.error(f"API Error {response.status_code}: {response.text}")
@@ -277,6 +287,8 @@ def extract_news_from_results(research_data, days=7):
 
     except Exception as e:
         logging.error(f"Error extracting news: {e}")
+        import traceback
+        traceback.print_exc()
         return []
 
 def fetch_bioplastic_news(days=7, max_items=10, exclude_urls=None):
