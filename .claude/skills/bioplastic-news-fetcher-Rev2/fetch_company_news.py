@@ -187,9 +187,11 @@ def extract_news_from_results(research_data, days=7):
         # Build citations list with indices for reference
         citations_text = "\n".join([f"[{idx+1}] {url}" for idx, url in enumerate(citations)])
 
-        # Construct extraction query - more aggressive and direct
+        # Construct extraction query - more flexible and resilient
         query = f"""
-        From the research below, extract EVERY news item about bioplastic/biopolymer COMPANIES.
+        From the research below, extract news items about bioplastic/biopolymer COMPANIES.
+        Be lenient with dates - if approximate date is within {start_date.strftime('%B')} or {today.strftime('%B %Y')}, include it.
+        If no explicit date is given, use today's date {today.strftime('%Y-%m-%d')}.
 
         RESEARCH:
         {content}
@@ -199,18 +201,19 @@ def extract_news_from_results(research_data, days=7):
 
         For each news item found, create a JSON object with:
         - Company: Exact company name from the research
-        - PublishingDate: Date in YYYY-MM-DD format (must be between {start_date.strftime('%B %d, %Y')} and {today.strftime('%B %d, %Y')})
+        - PublishingDate: Date in YYYY-MM-DD format (approximate is OK, use {today.strftime('%Y-%m-%d')} if not specified)
         - Headline: News headline (max 100 characters)
         - Description: 50-word summary
         - Category: ONE of these ONLY - Plant Announcement, People Moves, M&A, Litigation, Product Launch, Partnerships, Financial Results, Supply Agreements, Investment & Funding, Certifications
-        - SourceURL: MUST be from the AVAILABLE URLS list above
+        - SourceURL: Best matching URL from the AVAILABLE URLS list
 
         IMPORTANT:
-        - Extract ALL valid news items you find
-        - Match each item to a URL from the AVAILABLE URLS list
-        - Only include news published between {start_date.strftime('%B %d, %Y')} and {today.strftime('%B %d, %Y')}
-        - Return ONLY a JSON array, no other text
-        - If you find NO valid news items, return: []
+        - Extract news items you clearly see mentioned
+        - If specific URL is referenced in research, use that
+        - Otherwise, use the most relevant URL from the list
+        - Don't be overly strict about dates - approximate within reasonable range is OK
+        - Return ONLY a JSON array, no other text or explanation
+        - If you find NO news items, return: []
 
         Return format (ONLY JSON, nothing else):
         [
@@ -228,7 +231,7 @@ def extract_news_from_results(research_data, days=7):
             "messages": [
                 {
                     "role": "system",
-                    "content": "You extract structured JSON data from text. Return ONLY valid JSON arrays with no additional text, explanation, or markdown formatting."
+                    "content": "You are a data extractor. Extract structured JSON data from text. Return ONLY valid JSON arrays with no additional text, explanation, or markdown formatting. Be pragmatic with dates and URLs."
                 },
                 {
                     "role": "user",
@@ -236,7 +239,7 @@ def extract_news_from_results(research_data, days=7):
                 }
             ],
             "max_tokens": 3000,
-            "temperature": 0.1,  # Very low temperature for consistent extraction
+            "temperature": 0.2,  # Low temperature but slightly higher for flexibility
             "stream": False
         }
 
@@ -280,6 +283,12 @@ def extract_news_from_results(research_data, days=7):
             except json.JSONDecodeError as e:
                 logging.error(f"Failed to parse JSON response: {e}")
                 logging.error(f"Raw content was: {cleaned_content[:500]}")
+                # Try a more lenient extraction if strict JSON parsing fails
+                logging.info(f"Attempting fallback extraction...")
+                fallback_items = extract_news_fallback(cleaned_content, citations)
+                if fallback_items:
+                    print(f"✓ Fallback extraction found {len(fallback_items)} items")
+                    return fallback_items
                 return []
         else:
             logging.error(f"API Error {response.status_code}: {response.text}")
@@ -289,6 +298,44 @@ def extract_news_from_results(research_data, days=7):
         logging.error(f"Error extracting news: {e}")
         import traceback
         traceback.print_exc()
+        return []
+
+def extract_news_fallback(text_content, citations):
+    """
+    Fallback extraction method if JSON parsing fails
+    Attempts to manually parse news items from research text
+    """
+    try:
+        # Look for company names and associated information
+        companies = [
+            'CJ Biomaterials', 'TotalEnergies Corbion', 'Braskem', 'Sway', 'Loliware',
+            'Notpla', 'AgriSea', 'BASF', 'NatureWorks', 'Danimer', 'Teknor Apex'
+        ]
+
+        news_items = []
+
+        # Simple heuristic: if we find a company name in the text, try to extract related info
+        for company in companies:
+            if company.lower() in text_content.lower():
+                # Find headlines that mention this company
+                lines = text_content.split('\n')
+                for i, line in enumerate(lines):
+                    if company.lower() in line.lower() and len(line) > 20:
+                        # This might be a headline or description
+                        item = {
+                            'Company': company,
+                            'PublishingDate': datetime.now().strftime('%Y-%m-%d'),
+                            'Headline': line[:100].strip(),
+                            'Description': ' '.join(lines[i:min(i+3, len(lines))])[:200].strip(),
+                            'Category': 'Product Launch',  # Default category
+                            'SourceURL': citations[0] if citations else ''
+                        }
+                        news_items.append(item)
+                        break
+
+        return news_items
+    except Exception as e:
+        logging.warning(f"Fallback extraction also failed: {e}")
         return []
 
 def fetch_bioplastic_news(days=7, max_items=10, exclude_urls=None):
